@@ -1,0 +1,5 @@
+export const EMAIL_CHANGED = 'email_changed'
+export const PASSWORD_CHANGED = 'password_changed'
+export const TRY_LOGIN = 'try_login'
+export const ON_LOGIN_SUCCESS = 'login_success'
+export const ON_LOGIN_FAILED = 'login_failed'
