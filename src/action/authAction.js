@@ -3,7 +3,10 @@ import {
   PASSWORD_CHANGED,
   TRY_LOGIN,
   ON_LOGIN_FAILED,
-  ON_LOGIN_SUCCESS
+  ON_LOGIN_SUCCESS,
+  ON_SIGNOUT_FAILED,
+  ON_SIGNOUT_SUCCESS,
+  TRY_SIGNOUT
 } 
 from './type'
 import firebase from 'firebase'
@@ -40,6 +43,32 @@ export const tryLogin = (email,password)=>{
       onFailedAuth(dispatch)
     })
   }
+}
+
+export const signOut = ()=>{
+  return(dispatch) =>{
+    dispatch({
+      type: TRY_SIGNOUT
+    })
+
+    firebase.auth().signOut()
+    .then(()=>onSuccessSignOut(dispatch))
+    .catch(()=>{
+      onFailedSignOut(dispatch)
+    })
+  }
+}
+
+const onSuccessSignOut = (dispatch)=>{
+  dispatch({
+    type: ON_SIGNOUT_SUCCESS
+  })
+}
+
+const onFailedSignOut = (dispatch)=>{
+  dispatch({
+    type: ON_SIGNOUT_FAILED
+  })
 }
 
 const onSuccessAuth = (dispatch,user)=>{

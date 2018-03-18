@@ -14,9 +14,19 @@ import {
 import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
+import initFirebase from '../../firebase'
+
 
 
 class LoginForm extends Component{
+  
+  static navigationOptions = {
+    header: null
+  }
+  componentDidMount(){
+    initFirebase()
+  }
+  
   emailChanged(email){
     this.props.onEmailChanged(email)
   }
@@ -24,7 +34,7 @@ class LoginForm extends Component{
     this.props.onPasswordChanged(password)
   }
   onTryLogin(){
-    const { email, password, tryLogin, isSignedIn } = this.props
+    const { email, password, tryLogin } = this.props
     tryLogin(email,password)
 
     firebase.auth().onAuthStateChanged((user)=>{
@@ -38,9 +48,12 @@ class LoginForm extends Component{
   isLoading(){
     return (this.props.isLoading)? true:false
   }
+
   isLoginFailed(){
     if(this.props.failed){
-      return <Text style = {{fontSize: 20,alignSelf: 'center', color: 'red'}}> Authentication is failed </Text>
+      return <Text style = {{fontSize: 20,alignSelf: 'center', color: 'red'}}> 
+        Authentication is failed 
+      </Text>
     }
   }
 
@@ -60,16 +73,16 @@ class LoginForm extends Component{
     return(
       <View style = {container}>
         <View style = {form}>
-          <Image source = {require('../assets/logo.png')} style = {image} />
+          <Image source = {require('../assets/LOGO-ap.png')} style = {image} />
             <TextInput 
-              placeholder = 'user@gmail.com' 
+              placeholder = 'username or email' 
               style = {placeholder} 
               underlineColorAndroid = 'transparent'
               onChangeText = {(email)=>this.emailChanged(email)}
               value = {this.props.email}
+              placeholderTextColor = 'white'
             />
             <TextInput 
-              placeholderTextColor = 'red'
               placeholder = 'password' 
               style = {placeholder} 
               underlineColorAndroid = 'transparent'
@@ -77,18 +90,17 @@ class LoginForm extends Component{
               autoCorrect = {false}
               onChangeText = {(password)=>this.passwordChanged(password)}
               value = {this.props.password}
+              placeholderTextColor = 'white'
             />
-
             <Button 
               large 
               onPress = {this.onTryLogin.bind(this)} 
               title = 'LOGIN' 
               buttonStyle = {button} 
-              loading = {this.isLoading()}
+              loading = {this.isLoading()}          
             />
             {this.isLoginFailed()}
         </View>
-        <Text style = {footer}>Powered by BCC FILKOM</Text>
       </View>
     )
   }
@@ -98,41 +110,43 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
     flexDirection: 'column',
-    backgroundColor: '#262533',
+    backgroundColor: 'white',
     justifyContent: 'space-around',
   },
   image: {
     resizeMode: Image.resizeMode.contain,
-    height: 115,
-    width: 140,
-    marginTop: 90,
-    marginBottom: 30
+    height: 200,
+    width: 230,
+    marginTop: 10,
+    marginBottom: 40
   },
   placeholder:{
     height: 60,
     width :280,
     margin: 10,
-    backgroundColor: 'white',
-    borderWidth: 1,
+    backgroundColor: '#C9CACA',
     padding: 20,
-    borderRadius: 10,
-    fontFamily: 'Coffee with Sugar',
-    fontSize: 15
+    borderRadius: 30,
+    fontFamily: 'Roboto-Light',
+    fontSize: 15,
+    color: 'white'
   },
   form:{
     alignItems: 'center',
     marginBottom: 20
   },
   button:{
+    marginTop: 40,
     margin: 12,
-    borderRadius: 10,
+    borderRadius: 30,
     padding: 10,
     width: 280,
-    backgroundColor: '#EDEDED'
+    backgroundColor: '#757475',
+    alignSelf: 'center',
   },
   footer:{
     alignSelf: 'center',
-    fontFamily: 'Coffee with Sugar',
+    fontFamily: 'Roboto-Medium',
     fontSize: 20,
     color: 'white'
   },
@@ -147,7 +161,6 @@ const mapStateToProps = state =>{
     email: state.auth.email,
     password: state.auth.password,
     isLoading : state.auth.isLoading,
-    isSignedIn : state.auth.isSignedIn,
     failed : state.auth.failed 
   }
 }

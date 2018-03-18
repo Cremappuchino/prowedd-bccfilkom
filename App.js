@@ -9,7 +9,7 @@ import reducer from './src/reducer/reducer'
 import initFirebase from './firebase'
 
 class App extends Component {
-  componentWillMount(){
+  componentDidMount(){
     initFirebase()
   }
 
