@@ -24,7 +24,6 @@ export const authReducer = (state = INITIAL_STATE ,action)=>{
     case PASSWORD_CHANGED:
       return {...state, password: action.payload }
     case ON_LOGIN_SUCCESS:
-      console.log(action.payload)
       return {...state, ...INITIAL_STATE, user: action.payload }
     case ON_LOGIN_FAILED:
       return {...state, password: '', isLoading: false, failed: true }

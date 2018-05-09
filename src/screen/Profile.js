@@ -9,38 +9,11 @@ import {
 import firebase from 'firebase'
 import initFirebase from '../../firebase'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
 
 class Profile extends Component {
-
-  state = {
-    name: '',
-    email: '',
-    photoURL: null,
-    address: '',
-    phoneNumber: '',
-    ageBirthday: '',
-    description: ''
-  }
-
-  async componentDidMount() {
-    initFirebase()
-
-    let user = firebase.auth().currentUser
-    await user.providerData.forEach((profile) => {
-      this.setState({
-        name: profile.displayName == null ? 'Nama Anda' : profile.displayName,
-        email: profile.email,
-        photoURL: profile.photoURL == null ? 'http://www.freeiconspng.com/uploads/profile-icon-9.png' : profile.photoURL,
-        address: profile.address == null ? 'Alamat Anda' : profile.address,
-        phoneNumber: profile.phoneNumber == null ? 'Nomor handphone anda' : profile.phoneNumber,
-        ageBirthday: profile.ageBirthday == null ? 'Tanggal Lahir' : profile.ageBirthday,
-        description: profile.description == null ? 'Deskripsi diri anda' : profile.description
-      })
-    })
-  }
-
   
-
+  
   createRightComponent() {
     return (
       <TouchableOpacity onPress={() => this.props.navigation.navigate('Setting')}>
@@ -61,18 +34,9 @@ class Profile extends Component {
     )
   }
 
-  
 
   render() {
-    let {
-      name,
-      email,
-      photoURL,
-      phoneNumber,
-      address,
-      ageBirthday,
-      description
-    } = this.state
+    const { nama, emailUser, alamat, nomor, tanggal, deskripsi, foto } = this.props
     const {
       CardStyle,
       avatarContainer,
@@ -96,10 +60,10 @@ class Profile extends Component {
               <Avatar
                 xlarge
                 rounded
-                source={{ uri: photoURL }}
+                source={{ uri: foto }}
                 activeOpacity={0.7}
               />
-              <Text style={headerText}>{name}</Text>
+              <Text style={headerText}>{nama}</Text>
             </View>
             <TouchableOpacity onPress = {()=>this.props.navigation.navigate('EditProfile')}>
               <Icon name='mode-edit' size={25} color='grey' />
@@ -110,7 +74,7 @@ class Profile extends Component {
           <View style={fieldStyle}>
             <View style={dataContainer}>
               <Text style={headerText}>Tentang Saya</Text>
-              <Text style={text}>{description}</Text>
+              <Text style={text}>{deskripsi}</Text>
             </View>
           </View>
         </Card>
@@ -118,7 +82,7 @@ class Profile extends Component {
           <View style={fieldStyle}>
             <View style={dataContainer}>
               <Text style={headerText}>Tanggal Lahir</Text>
-              <Text style={text}>{ageBirthday}</Text>
+              <Text style={text}>{tanggal}</Text>
             </View>
           </View>
         </Card>
@@ -126,7 +90,7 @@ class Profile extends Component {
           <View style={fieldStyle}>
             <View style={dataContainer}>
               <Text style={headerText}>Alamat</Text>
-              <Text style={text}>{address}</Text>
+              <Text style={text}>{alamat}</Text>
             </View>
           </View>
         </Card>
@@ -134,7 +98,7 @@ class Profile extends Component {
           <View style={fieldStyle}>
             <View style={dataContainer}>
               <Text style={headerText}>Nomor Telepon</Text>
-              <Text style={text}>{phoneNumber}</Text>
+              <Text style={text}>{nomor}</Text>
             </View>
           </View>
         </Card>
@@ -142,7 +106,7 @@ class Profile extends Component {
           <View style={fieldStyle}>
             <View style={dataContainer}>
               <Text style={headerText}>Email</Text>
-              <Text style={text}>{email}</Text>
+              <Text style={text}>{emailUser}</Text>
             </View>
           </View>
         </Card>
@@ -193,5 +157,16 @@ const styles = StyleSheet.create({
   }
 })
 
+const mapStateToProps = ({profile}) =>{
+  return {
+    nama : profile.nama,
+    alamat : profile.alamat,
+    emailUser : profile.emailUser,
+    tanggal : profile.tanggal,
+    nomor : profile.nomor,
+    deskripsi : profile.deskripsi,
+    foto : profile.photoURL
+  }
+}
 
-export default Profile
+export default connect (mapStateToProps) (Profile)

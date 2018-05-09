@@ -15,6 +15,7 @@ import { Button } from 'react-native-elements'
 import { connect } from 'react-redux'
 import firebase from 'firebase'
 import initFirebase from '../../firebase'
+import { NavigationActions } from 'react-navigation'
 
 
 
@@ -33,16 +34,14 @@ class LoginForm extends Component{
   passwordChanged(password){
     this.props.onPasswordChanged(password)
   }
+  
   onTryLogin(){
-    const { email, password, tryLogin } = this.props
+    const { email, user , password, tryLogin } = this.props
     tryLogin(email,password)
 
-    firebase.auth().onAuthStateChanged((user)=>{
-      console.log(user)
-      if(user){
-        this.props.navigation.navigate('Main')
-      }
-    })
+    if(user){
+      this.props.navigation.navigate('Main')
+    }
   }
 
   isLoading(){
@@ -161,7 +160,8 @@ const mapStateToProps = state =>{
     email: state.auth.email,
     password: state.auth.password,
     isLoading : state.auth.isLoading,
-    failed : state.auth.failed 
+    failed : state.auth.failed,
+    user : state.auth.user 
   }
 }
 

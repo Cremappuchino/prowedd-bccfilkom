@@ -4,11 +4,12 @@ import { Card, Button, Avatar, Header } from 'react-native-elements'
 import firebase from 'firebase'
 import initFirebase from '../../firebase'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { connect } from 'react-redux'
+import { updateProfile } from '../action/updateProfile'
 
 
 
 class EditProfile extends Component {
-
 
   state = {
     name: '',
@@ -17,7 +18,14 @@ class EditProfile extends Component {
     address: '',
     phoneNumber: '',
     ageBirthday: '',
-    description: ''
+    description: '',
+    gName : false,
+    gEmail : false,
+    gPhotoURL : false,
+    gAddress: false,
+    gPhoneNumber: false,
+    gAgeBirthday: false,
+    gDescription : false
   }
 
   createCenterComponent() {
@@ -47,50 +55,51 @@ class EditProfile extends Component {
       </View>
     )
   }
-  
-
-
-  async componentDidMount() {
-    initFirebase()
-
-    let user = firebase.auth().currentUser
-    await user.providerData.forEach((profile) => {
-      console.log(profile)
-      this.setState({
-        name: profile.displayName == null ? 'Nama Anda' : profile.displayName,
-        email: profile.email,
-        photoURL: profile.photoURL == null ? 'http://www.freeiconspng.com/uploads/profile-icon-9.png' : profile.photoURL,
-        address: profile.address == null ? 'Alamat Anda' : profile.address,
-        phoneNumber: profile.phoneNumber == null ? 'Nomor handphone anda' : profile.phoneNumber,
-        ageBirthday: profile.ageBirthday == null ? 'Tanggal Lahir' : profile.ageBirthday,
-        description: profile.description == null ? 'Deskripsi diri anda' : profile.description
-      })
-    })
-  }
 
   editProfile() {
     let {
       name,
       email,
+      photoURL,
+      phoneNumber,
       address,
       ageBirthday,
-      phoneNumber,
-      description
+      description,
+      gName,
+      gEmail,
+      gPhotoURL,
+      gPhoneNumber,
+      gAddress,
+      gAgeBirthday,
+      gDescription
     } = this.state
 
-    let user = firebase.auth().currentUser
-    console.log(user)
-    user.updateProfile({
-      displayName: name,
-      email: email,
-      address: address,
-      phoneNumber: phoneNumber,
-      description: description,
-      ageBirthday: ageBirthday
-    }).then(() => {
-      this.props.navigation.goBack()
-    }).catch((err) => console.log(err))
+    if(gName){
+      this.props.updateProfile('nama',name)
+      this.setState({gName: false})
+    }
+    if(gAddress){
+      this.props.updateProfile('alamat',address)
+      this.setState({gAddress: false})
+    }
+    if(gDescription){
+      this.props.updateProfile('description',description)
+      this.setState({gDescription: false})
+    }
+    if(gEmail){
+      this.props.updateProfile('email',email)
+      this.setState({gEmail: false})
+    }
+    if(gAgeBirthday){
+      this.props.updateProfile('tanggal',ageBirthday)
+      this.setState({gAgeBirthday: false})
+    }
+    if(gPhoneNumber){
+      this.props.updateProfile('nomor',phoneNumber)
+      this.setState({gPhoneNumber: false})
+    }
 
+    this.props.navigation.goBack()
   }
 
   render() {
@@ -111,8 +120,17 @@ class EditProfile extends Component {
       phoneNumber,
       address,
       ageBirthday,
-      description
+      description,
+      gName,
+      gEmail,
+      gPhotoURL,
+      gPhoneNumber,
+      gAddress,
+      gAgeBirthday,
+      gDescription
     } = this.state
+
+    const { nama, emailUser, alamat, nomor, tanggal, deskripsi, foto } = this.props
 
     return (
       <ScrollView>
@@ -127,7 +145,7 @@ class EditProfile extends Component {
             <Avatar
               xlarge
               rounded
-              source={{ uri: photoURL }}
+              source={{ uri: foto }}
               activeOpacity={0.7}
             />
             <TouchableOpacity>
@@ -139,8 +157,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Nama Pengguna</Text>
             <TextInput
-              onChangeText={(nama) => this.setState({ name: nama })}
-              value={name}
+              onChangeText={(nama) => this.setState({name: nama, gName : true})}
+              placeholder = 'Nama Anda'
             />
           </View>
         </Card>
@@ -148,8 +166,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Deskripsi Pengguna</Text>
             <TextInput
-              onChangeText={(deskripsi) => this.setState({ description: deskripsi })}
-              value={description}
+              onChangeText={(deskripsi) => this.setState({ description: deskripsi, gDescription: true })}
+              placeholder = 'Deskripsi'
             />
           </View>
         </Card>
@@ -157,8 +175,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Alamat</Text>
             <TextInput
-              onChangeText={(alamat) => this.setState({ address: alamat })}
-              value={address}
+              onChangeText={(alamat) => this.setState({ address: alamat, gAddress : true })}
+              placeholder = 'Alamat Anda'
             />
           </View>
         </Card>
@@ -166,8 +184,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Tanggal Lahir</Text>
             <TextInput
-              onChangeText={(tanggal) => this.setState({ ageBirthday: tanggal })}
-              value={ageBirthday}
+              onChangeText={(tanggal) => this.setState({ ageBirthday: tanggal, gAgeBirthday : true })}
+              placeholder = 'Tanggal lahir anda'
             />
           </View>
         </Card>
@@ -175,8 +193,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Nomor Telepon</Text>
             <TextInput
-              onChangeText={(nomor) => this.setState({ phoneNumber: nomor })}
-              value={phoneNumber}
+              onChangeText={(nomor) => this.setState({ phoneNumber: nomor, gPhoneNumber: true })}
+              placeholder = 'nomor telepon'
             />
           </View>
         </Card>
@@ -184,8 +202,8 @@ class EditProfile extends Component {
           <View style={dataContainer}>
             <Text style={headerText}>Email</Text>
             <TextInput
-              onChangeText={(email) => this.setState({ email: email })}
-              value={email}
+              onChangeText={(email) => this.setState({ email: email, gEmail: true })}
+              placeholder = 'email'
             />
           </View>
         </Card>
@@ -234,4 +252,16 @@ const styles = StyleSheet.create({
   }
 })
 
-export default EditProfile
+const mapStateToProps = (state) =>{
+  return {
+    nama : state.profile.nama,
+    alamat : state.profile.alamat,
+    emailUser : state.profile.email,
+    tanggal : state.profile.tanggal,
+    nomor : state.profile.nomor,
+    deskripsi : state.profile.deskripsi,
+    foto: state.profile.photoURL
+  }
+}
+
+export default connect(mapStateToProps,{updateProfile})(EditProfile)

@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { signOut } from '../action/authAction'
 import Spinner from '../components/Spinner'
 import firebase from 'firebase'
+import { NavigationActions } from 'react-navigation'
 
 class Setting extends Component {
   
@@ -13,7 +14,12 @@ class Setting extends Component {
 
     firebase.auth().onAuthStateChanged((user)=>{
       if(!user){
-        this.props.navigation.navigate('Login')
+        const resetAction = NavigationActions.reset({
+          index :0,
+          actions : [NavigationActions.navigate({routeName : 'Login' })]
+        })
+
+        this.props.navigation.dispatch(resetAction)
       }
     })
   }

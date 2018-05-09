@@ -2,29 +2,28 @@ import React, { Component } from 'react'
 import { View, Text, Image, StyleSheet } from 'react-native'
 import firebase from 'firebase'
 import initFirebase from '../../firebase'
+import { NavigationActions } from 'react-navigation'
 
 
 class Splash extends Component{
-  
-  state = { user: null }
-  
 
   static navigationOptions = {
     header: null
   }
 
-  async componentDidMount(){
+  componentDidMount(){
     initFirebase()
-    await firebase.auth().onAuthStateChanged((user)=>{
-      if(user){
-        console.log(user)
-        this.props.navigation.navigate('Main')
-      }else{
-        this.props.navigation.navigate('Login')
-      }
-    })
+    firebase.auth().onAuthStateChanged((user)=>{
+      const resetAction = NavigationActions.reset({
+        index :0,
+        actions : [NavigationActions.navigate({routeName : user? 'Main':'Login' })]
+      })
 
+      this.props.navigation.dispatch(resetAction)
+    })
   }
+
+  
 
   render(){
     const { container,image, text } = styles

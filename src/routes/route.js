@@ -11,9 +11,13 @@ import Home from '../screen/Home'
 import Profil from '../screen/Profile'
 import Splash from '../screen/Splash'
 import Favorite from '../screen/Favorite'
-import Calculator from '../screen/Calculator'
+import Calculator from '../screen/Calculate'
 import EditProfile from '../screen/EditProfile'
 import Setting from '../screen/Setting'
+import ListVendor from '../screen/ListVendor'
+import Vendor from '../screen/Vendor'
+import Transaction from '../screen/Transaction'
+import Search from '../screen/SearchBar'
 import firebase from 'firebase'
 import Ionicons from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
@@ -82,7 +86,11 @@ const rootNavigator = ()=>{
     Login: { screen: LoginForm },
     Main : { screen: mainNavigator },
     Setting : { screen : Setting },
-    EditProfile: { screen: EditProfile }
+    EditProfile: { screen: EditProfile },
+    ListVendor : { screen : ListVendor },
+    Vendor : { screen: Vendor },
+    Transaction: { screen: Transaction},
+    Search : { screen: Search }
   },{
     headerMode: 'none'
   }
